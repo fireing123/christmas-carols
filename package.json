@@ -1,0 +1,35 @@
+{
+  "name": "christmas-carols",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "npx prisma generate --no-engine && next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@auth/prisma-adapter": "^2.2.0",
+    "@mantine/core": "^7.14.3",
+    "@mantine/form": "^7.14.3",
+    "@mantine/hooks": "^7.14.3",
+    "@prisma/client": "^5.14.0",
+    "@prisma/extension-accelerate": "^1.1.0",
+    "@tabler/icons-react": "^3.5.0",
+    "next": "^15.0.3",
+    "next-auth": "^5.0.0-beta.19",
+    "next-themes": "^0.2.1",
+    "react": "^18",
+    "react-dom": "^18"
+  },
+  "devDependencies": {
+    "@types/cookie": "^0.5.4",
+    "@types/node": "22.10.1",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "@types/youtube": "^0.1.0",
+    "eslint": "^8",
+    "prisma": "^5.7.1",
+    "typescript": "^5"
+  }
+}
