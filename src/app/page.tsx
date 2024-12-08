@@ -1,9 +1,9 @@
 "use client";
 
 import { decorationPaths, groundPaths, housePaths, presentPaths } from "@/lib/resorcePath";
-import { Image, Button, Center, Group, Modal, Stack, UnstyledButton, AspectRatio } from "@mantine/core";
+import { Image, Button, Center, Group, Modal, UnstyledButton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { IconMusicPause, IconPlayerPause, IconPlayerPlay, IconPlayerSkipBack, IconPlayerSkipForward } from "@tabler/icons-react";
+import { IconPlayerPause, IconPlayerPlay, IconPlayerSkipBack, IconPlayerSkipForward } from "@tabler/icons-react";
 import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from "react";
 import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";

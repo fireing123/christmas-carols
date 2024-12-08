@@ -8,7 +8,6 @@ import { MantineProvider, createTheme } from '@mantine/core';
 import Header from "@/component/Header/Header";
 import { SessionLayout } from "@/component/Layout/Session";
 import ThemeProviders from "@/component/Layout/theme";
-import { ModalsProvider } from "@mantine/modals";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,14 +30,12 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body className={inter.className}>
       <MantineProvider theme={theme} >
-      <ModalsProvider>
       <ThemeProviders>
       <SessionLayout>
         <Header />
         {children}
       </SessionLayout>
       </ThemeProviders>
-      </ModalsProvider>
       </MantineProvider>
       </body>
     </html>

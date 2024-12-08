@@ -12,17 +12,13 @@ export default function Make() {
     const [opened, { toggle, close }] = useDisclosure(false);
     const [decorationOpened, { open: decOpen, close: decClose }] = useDisclosure(false);
 
+    const [items, setItems] = useState<Decoration[]>([]);
+    const [dragId, setDragId] = useState<string | null>();
     const [opendComponent, setOpendComponent] = useState("house");
     const [color, setColor] = useState(0);
 
     const [houseColor, setHouseColor] = useState(0);
     const [backgroundColor, setBackgroundColor] = useState(0);
-
-    const [decColor, setDecColor] = useState(0);
-
-    if (status == "authenticated") {
-        console.log(session)
-    }
 
     useEffect(() => {
         if (status == "authenticated") {
@@ -52,8 +48,18 @@ export default function Make() {
 
     }
 
-    const createDecData = () => {
-        
+    const createDecData = (color: number) => {
+        if (status != "authenticated") return;
+
+        setItems([...items,
+            {
+                id: Math.random().toString(36).substring(2, 16),
+                locationX: 100,
+                locationY: 100,
+                color: color,
+            }
+        ])
+        decClose();
     }
 
     const changeColor = (value: string) => {
@@ -70,8 +76,37 @@ export default function Make() {
         }
     }
 
+    const handleMouseDown = (id: string, event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        setDragId(id)
+    };
+
+    // 드래그 중 위치 업데이트
+    const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (dragId == null) return;
+        setItems(
+            items.map((item) =>
+                item.id === dragId
+                ? { ...item, locationX: event.clientX - 50, locationY: event.clientY - 150} as never
+                : item
+            )
+        )
+
+    };
+
+    // 드래그 종료
+    const handleMouseUp = () => {
+        setDragId(null);
+    };
+
+
     return (
-        <div className="container">
+        <div 
+          className="container"
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
             <Image 
               w="100%"
               h="auto"
@@ -96,6 +131,24 @@ export default function Make() {
               }}
             />
 
+            {items.map((v, i) => (
+                <Image
+                  w="25%"
+                  h="auto"
+                  fit="contain"
+                  src={decorationPaths[v.color]}
+                  alt="house" 
+                  key={i}
+                  className="draggable"
+                  style={{
+                      left: `${v.locationX}px`,
+                      top: `${v.locationY}px`,
+                      zIndex: dragId === v.id ? 10 : 1,
+                  }}
+                  onMouseDown={(e) => handleMouseDown(v.id, e)}
+                />
+            ))}
+
             <Button 
               onClick={SaveHouse} 
               className="positionAbsolute"
@@ -115,19 +168,17 @@ export default function Make() {
             >장식품 추가</Button>
 
             <Modal fullScreen opened={decorationOpened} onClose={decClose} title="장식품 추가">
-                    {decorationColors.map((item, i) => (
-                        
-                            <Image
-                              w="20%"
-                              h="auto"
-                              fit="contain"
-                              src={decorationPaths[i]}
-                              alt="present"
-                              key={i}
-                              onClick={() => setDecColor(i)}
-                            />
-
-                    ))}
+                {decorationColors.map((item, i) => (
+                    <Image
+                      w="20%"
+                      h="auto"
+                      fit="contain"
+                      src={decorationPaths[i]}
+                      alt="present"
+                      key={i}
+                      onClick={() => createDecData(i)}
+                    />
+                ))}
             </Modal>
 
             <Dialog opened={opened} withCloseButton onClose={close} size="lg" radius="md">
