@@ -1,15 +1,25 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { ColorPicker, Text, Dialog, ActionIcon, Group, TextInput, Drawer, Button, Checkbox, Select, Overlay, AspectRatio, ColorSwatch, CheckIcon, rem  } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import { ColorPicker, Dialog, Group, Button } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-
-const colors = ['#fff'];
+import { houseColors, housePaths, groundColors, groundPaths } from '@lib/resorcePath';
+import Image from 'next/image';
 
 export default function Make() {
     const { data: session, status } = useSession();
     const [house, setHouse] = useState<HouseInfo>();
+    const [opened, { toggle, close }] = useDisclosure(false);
+
+    const [opendComponent, setOpendComponent] = useState("house");
+    const [color, setColor] = useState(0);
+
+    const [houseColor, setHouseColor] = useState(0);
+    const [backgroundColor, setBackgroundColor] = useState(0);
+
+    if (status == "authenticated") {
+        console.log(session)
+    }
 
     useEffect(() => {
         if (status == "authenticated") {
@@ -17,29 +27,21 @@ export default function Make() {
             .then(async (res) => {
                 const fetchRes = await res.json();
                 if ("error" in fetchRes) {
-                    console.log("error" + fetchRes.error)
+                    console.log("error" + fetchRes.error);
                 } else {
-
+                    setHouse(fetchRes);
                 }
             })
         }
     }, [status]);
 
-    const [opened, { toggle, close }] = useDisclosure(false);
-
-    const [opendComponent, setOpendComponent] = useState("roof");
-    const [color, setColor] = useState(0);
-
-    const [roofColor, setRoofColor] = useState(0);
-    const [wallColor, setWallColor] = useState(0);
-
-    const OpenHouseRoof = () => {
-        setOpendComponent("roof");
-        toggle()
+    const OpenHouse = () => {
+        setOpendComponent("house");
+        toggle();
     }
 
-    const OpenHouseWall = () => {
-        setOpendComponent("wall");
+    const OpenBackground = () => {
+        setOpendComponent("background");
         toggle();
     }
 
@@ -48,42 +50,63 @@ export default function Make() {
     }
 
     const changeColor = (value: string) => {
-        const index = colors.indexOf(value);
-        setColor(index);
+        if (opendComponent == "house") {
+            const index = houseColors.indexOf(value);
+            setColor(index);
 
-        if (opendComponent == "roof") {
-            setRoofColor(index);
-        } else if (opendComponent == "wall") {
-            setWallColor(index);
+            setHouseColor(index);
+        } else if (opendComponent == "background") {
+            const index = groundColors.indexOf(value);
+            setColor(index);
+
+            setBackgroundColor(index);
         }
     }
 
     return (
-        <>
-            <Button onClick={SaveHouse}>save</Button>
+        <div className="container">
+            <Image 
+              width={1080}
+              height={1920}
+              src={groundPaths[backgroundColor]}
+              alt="background" 
+              onClick={OpenBackground}
+              className="positionAbsolute"
+            />
 
-            <Group justify="center">
-                <Button onClick={OpenHouseRoof}>Toggle dialog</Button>
-            </Group>
-        
-            <Group justify="center">
-                <Button onClick={OpenHouseWall}>Toggle dialog</Button>
-            </Group>
-        
+            <Image 
+              width={500/ 2}
+              height={500 / 2}
+              src={housePaths[houseColor]}
+              alt="house" 
+              onClick={OpenHouse}
+              className="positionAbsolute"
+              style={{
+                left: "190px",
+                top: "150px"
+              }}
+            />
+
+            <Button 
+              onClick={SaveHouse} 
+              className="positionAbsolute"
+              style={{
+                left: "200px",
+                top: "50px"
+              }}
+            >save</Button>
+
             <Dialog opened={opened} withCloseButton onClose={close} size="lg" radius="md">
                 <Group align="flex-end">
                     <ColorPicker 
                       format='hex'
-                      value={colors[color]}
+                      value={opendComponent === "house" ? houseColors[color] : groundColors[color]}
                       onChange={(value) => changeColor(value)}
                       withPicker={false}
-                      swatches={colors}
+                      swatches={opendComponent === "house" ? houseColors : groundColors}
                     />
                 </Group>
             </Dialog>
-
-
-          
-        </>
+        </div>
     );
 }

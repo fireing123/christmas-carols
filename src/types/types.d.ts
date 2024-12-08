@@ -1,36 +1,27 @@
-declare module 'next-auth' {
-    interface Session {
-      user: {
-        id: string;
-        email: string;
-        name: string;
-        image: string;
-      };
-    }
-  }
-
-interface HouseItem {
-    id: number;
-    x: number;
-    y: number;
-    label: string;
-    isDraggable: boolean;
-}
 
 interface HouseInfo {
-    id: string,
-    authorEmail: string,
-    link: string,
-    wallColor: number,
-    roofColor: number,
-    presents: PresentData[],
+    id: string;
+    authorEmail: string;
+    link: string;
+    houseColor: number;
+    backgroundColor: number;
+    presents: PresentData[];
+    decorations: Decoration[];
 }
 
 interface PresentData {
+    id: string;
     locationX: number;
     locationY: number;
     color: number;
     authorEmail: string;
     song: string;
     letter: string;
+}
+
+interface Decoration {
+    id: string;
+    locationX: number;
+    locationY: number;
+    color: number;
 }

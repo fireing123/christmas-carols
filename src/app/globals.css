@@ -8,10 +8,7 @@ body {
 }
 
 .container {
-  width: 100vw;
-  height: 100vh;
   position: relative;
-  background-color: #f0f0f0;
 }
 
 .static-item {
@@ -56,16 +53,12 @@ body {
 }
 
 .draggable {
-  width: 100px;
-  height: 100px;
-  background-color: skyblue;
   position: absolute;
   cursor: grab;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  font-weight: bold;
+}
+
+.positionAbsolute {
+  position: absolute;
 }
 
 .draggable:active {

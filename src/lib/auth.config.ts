@@ -8,13 +8,13 @@ export default {
           clientId: process.env.GOOGLE_CLIENT_ID!,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET!
         })
-      ],
-      callbacks: {
-        async signIn() {
-          return true;
-        },
-        async session({ session }) {
-          return session;
-        },
+    ],
+    callbacks: {
+      async signIn({ user, account, profile, email, credentials }) {
+        return true;
+      },
+      async session({ session, user }) {
+        return session;
+      }
+    }
 } satisfies NextAuthConfig
-

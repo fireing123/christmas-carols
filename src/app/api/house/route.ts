@@ -27,16 +27,55 @@ export async function GET(request: Request) {
 
     return NextResponse.json({
         authorEmail: "gimd82368@gmail.com",
-        wallColor: 0,
-        roofColor: 0,
+        backgroundColor: 0,
+        houseColor: 0,
         presents: [
             {
-                locationX: 50,
+                id: "5641545asd6",
+                locationX: 150,
                 locationY: 50,
                 color: 0,
                 authorEmail: "gamd82368@gmail.com",
                 song: "dJhp6awU5Z8",
                 letter: "존나 아프다...."
+            },
+            {
+                id: "564154s56",
+                locationX: 50,
+                locationY: 150,
+                color: 1,
+                authorEmail: "gamd82368@gmail.com",
+                song: "Xp5glUUdxiE",
+                letter: "존나 아프다...."
+            },
+            {
+                id: "56415456",
+                locationX: 50,
+                locationY: 50,
+                color: 0,
+                authorEmail: "gamd82368@gmail.com",
+                song: "RiyY-LZFLw8",
+                letter: "존나 아프다...."
+            }
+        ],
+        decorations: [
+            {
+                id: "5641545asd6",
+                locationX: 150,
+                locationY: 50,
+                color: 0
+            },
+            {
+                id: "564154s56",
+                locationX: 50,
+                locationY: 150,
+                color: 1
+            },
+            {
+                id: "56415456",
+                locationX: 50,
+                locationY: 50,
+                color: 1
             }
         ]
     })
