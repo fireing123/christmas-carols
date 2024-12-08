@@ -1,21 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useSession } from 'next-auth/react';
-import { groundPaths, housePaths, presentPaths } from "@/lib/resorcePath";
-import Image from 'next/image';
-import { Button, Group, Stack, Modal, UnstyledButton } from "@mantine/core";
+import { decorationPaths, groundPaths, housePaths, presentPaths } from "@/lib/resorcePath";
+import { Image, Button, Center, Group, Modal, Stack, UnstyledButton, AspectRatio } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconMusicPause, IconPlayerPause, IconPlayerPlay, IconPlayerSkipBack, IconPlayerSkipForward } from "@tabler/icons-react";
+import { useSession } from 'next-auth/react';
+import { useEffect, useRef, useState } from "react";
+import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";
 
 export default function Home() {
-    const [url, setUrl] = useState('https://www.youtube.com/embed/dQw4w9WgXcQ')
+    const [url, setUrl] = useState('dQw4w9WgXcQ')
     const { data: session, status } = useSession();
     const [opened, { open, close }] = useDisclosure(false);
-    const [isPlaying, { toggle: playToggle, open: playOpen }] = useDisclosure(false);
+    const [isPlaying, { toggle: playToggle, open: playOpen, close: playClose }] = useDisclosure(false);
     const [house, setHouse] = useState<HouseInfo>();
     const [presentIndex, setPresentIndex] = useState(0);
-
+    
+    const playerRef = useRef<YouTubePlayer>(null);
+      
     useEffect(() => {
         if (status == "authenticated") {
             fetch(`/api/house?userId=${session.user?.userId}`)
@@ -25,24 +27,13 @@ export default function Home() {
                     console.log("error" + fetchRes.error);
                 } else {
                     setHouse(fetchRes);
+                    if (house?.presents.length != 0) {
+                        setMusicIndex(0);
+                    }
                 }
             });
         }
     }, [status]);
-
-    const onPlayerStateChange = () => {
-
-    }
-
-    const playVideo = () => {
-        playToggle();
-        if (isPlaying) {
-            setUrl(url.replace('&autoplay=1', '').replace('?autoplay=1', ''));
-        } else
-        {
-            setUrl(url + (url.includes('?') ? '&' : '?') + 'autoplay=1');
-        }
-    };
 
     const backMusicList = () => {
         if (presentIndex == 0) {
@@ -64,7 +55,7 @@ export default function Home() {
 
     const setMusicIndex = (index: number) => {
         const youtubeId = house?.presents[index].song
-        setUrl(`https://www.youtube.com/embed/${youtubeId}?autoplay=1`);
+        setUrl(youtubeId!);
         playOpen();
     }
 
@@ -74,48 +65,99 @@ export default function Home() {
         open();
     }
 
+    const onPlayerReady: YouTubeProps["onReady"] = (event) => {
+        // YouTube player 객체 저장
+        playerRef.current = event.target;
+    };
+
+    const playVideo = () => {
+        if (!playerRef.current) return;
+
+        playToggle();
+        if (isPlaying) {
+            playerRef.current.pauseVideo();
+        } else {
+            playerRef.current.playVideo();
+        }
+    };
+
+    const opts: YouTubeProps['opts'] = {
+        width: "80%",
+        height: "auto",
+        playerVars: {
+            autoplay: 1,
+        },
+    };
+
     if (house) {
         return (
             <div
               className="container"
             >
-            <Image 
-              width={1080}
-              height={1920}
+
+            <Image
+              w="100%"
+              h="auto"
+              fit="contain"
               src={groundPaths[house.backgroundColor]}
               alt="background"
               className="positionAbsolute"
             />
 
             <Image 
-              width={500 / 2}
-              height={500 / 2}
+              w="50%"
+              h="auto"
+              fit="contain"
               src={housePaths[house.houseColor]}
               alt="house"
               className="positionAbsolute"
               style={{
-                left: "190px",
-                top: "150px"
+                left: "40%",
+                top: "45%"
               }}
             />
 
+            {house.decorations.map((item, i) => (
+                <Image
+                  h="25%"
+                  w="auto"
+                  fit="contain"
+                  src={decorationPaths[item.color]}
+                  alt="decoration"
+                  key={item.id}
+                  className="positionAbsolute"
+                  style={{
+                      left: `${item.locationX}%`,
+                      top: `${item.locationY}%`,
+                  }}
+                />
+            ))}
+
             {house.presents.map((item) => (
                 <Image
-                  width={500 / 6}
-                  height={500 / 6}
+                  w="20%"
+                  h="auto"
+                  fit="contain"
                   src={presentPaths[item.color]}
                   alt="present"
                   key={item.id}
                   onClick={() => openPresent(item.id)}
                   className="positionAbsolute"
                   style={{
-                      left: `${item.locationX}px`,
-                      top: `${item.locationY}px`,
+                      left: `${item.locationX}%`,
+                      top: `${item.locationY}%`,
                   }}
                 />
             ))}
 
-            <Modal opened={opened} onClose={close} title={house.presents[presentIndex].authorEmail}>
+            <Modal
+              opened={opened} 
+              onClose={close} 
+              title={house.presents[presentIndex].authorEmail}
+              centered
+              fullScreen
+            >
+                
             {house.presents[presentIndex].letter}
 
             <Button onClick={() => {
@@ -125,20 +167,13 @@ export default function Home() {
 
             </Modal>
 
-            <Stack
-              style={{ 
-                fontFamily: 'Arial, sans-serif',
-                margin: '20px', 
-                left: "0px",
-                top: "380px"
-            }}
+            <div 
               className="positionAbsolute"
-            >
-                <iframe 
-                    src={`${url}&controls=0`}
-                    allow="autoplay"
-                />
+              style={{
+                  top: "400px"
+              }}>
 
+                <Center>
                 <Group>
                     <UnstyledButton onClick={backMusicList}>
                         <IconPlayerSkipBack />
@@ -151,7 +186,18 @@ export default function Home() {
                         <IconPlayerSkipForward />
                     </UnstyledButton>
                 </Group>
-            </Stack>
+                </Center>
+
+                <YouTube 
+                  videoId={url}
+                  opts={opts}
+                  onReady={onPlayerReady}
+                  onPlay={playOpen}
+                  onPause={playClose}
+                  onEnd={nextMusicList}
+                  
+                />
+            </div>
             </div>
         )
     }

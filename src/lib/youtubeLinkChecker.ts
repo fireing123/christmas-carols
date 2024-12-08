@@ -8,10 +8,3 @@ export function extractYouTubeId(url: string): string | null {
     const match = url.match(idRegex);
     return match ? match[1] : null;
 }
-
-export async function CheckYoutubeLink(id: string): Promise<boolean> {
-    const res = await fetch(`/api/youtubeChecker?id=${id}`)
-        .then(async res => await res.json());
-    
-    return res.youtubeEmbed;
-}

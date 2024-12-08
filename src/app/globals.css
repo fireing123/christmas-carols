@@ -9,6 +9,7 @@ body {
 
 .container {
   position: relative;
+  min-height: 350px;
 }
 
 .static-item {
@@ -63,4 +64,10 @@ body {
 
 .draggable:active {
   cursor: grabbing;
+}
+
+.video-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

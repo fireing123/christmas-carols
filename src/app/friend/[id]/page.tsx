@@ -171,8 +171,9 @@ export default function Friend() {
                     >
                         
                         <Image 
-                          width="100%"
-                          height="auto"
+                          w="100%"
+                          h="auto"
+                          fit="contain"
                           src={groundPaths[friendHouse.backgroundColor]}
                           alt="background"
                           className="positionAbsolute"
@@ -186,8 +187,8 @@ export default function Friend() {
                           alt="house"
                           className="positionAbsolute"
                           style={{
-                            left: "190px",
-                            top: "150px"
+                            left: "40%",
+                            top: "45%"
                           }}
                         />
 
@@ -201,8 +202,8 @@ export default function Friend() {
                               key={item.id}
                               className="draggable"
                               style={{
-                                  left: `${item.locationX}px`,
-                                  top: `${item.locationY}px`,
+                                  left: `${item.locationX}%`,
+                                  top: `${item.locationY}%`,
                               }}
                             />
                         ))}
@@ -215,10 +216,10 @@ export default function Friend() {
                               src={presentPaths[item.color]}
                               alt="present"
                               key={item.id}
-                              className="draggable"
+                              className="positionAbsolute"
                               style={{
-                                  left: `${item.locationX}px`,
-                                  top: `${item.locationY}px`,
+                                  left: `${item.locationX}%`,
+                                  top: `${item.locationY}%`,
                               }}
                             />
                         ))}
@@ -252,8 +253,8 @@ export default function Friend() {
                               alt="present"
                               className="positionAbsolute"
                               style={{
-                                  left: `${item.locationX}px`,
-                                  top: `${item.locationY}px`,
+                                  left: `${item.locationX}%`,
+                                  top: `${item.locationY}%`,
                                   zIndex: isDragging ? 10 : 1,
                               }}
                               onMouseDown={(e) => handleMouseDown(e)}
