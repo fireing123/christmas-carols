@@ -1,63 +1,39 @@
 "use client";
 
+import { useYouTubePlayer } from "@/component/Layout/YoutubeContext";
+import YoutubeBox from "@/component/YoutubeBox";
 import { decorationPaths, groundPaths, housePaths, presentPaths } from "@/lib/resorcePath";
-import { Image, Button, Center, Group, Modal, UnstyledButton } from "@mantine/core";
+import { Image, Button, Center, Group, Modal, UnstyledButton, Stack, Text, Title, CopyButton, Space } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlayerPause, IconPlayerPlay, IconPlayerSkipBack, IconPlayerSkipForward } from "@tabler/icons-react";
 import { useSession } from 'next-auth/react';
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import YouTube, { YouTubePlayer, YouTubeProps } from "react-youtube";
 
 export default function Home() {
-    const [url, setUrl] = useState('dQw4w9WgXcQ')
+    const router = useRouter();
+    const { playerRef, playerState, pause, resume, play } = useYouTubePlayer();
     const { data: session, status } = useSession();
     const [opened, { open, close }] = useDisclosure(false);
-    const [isPlaying, { toggle: playToggle, open: playOpen, close: playClose }] = useDisclosure(false);
     const [house, setHouse] = useState<HouseInfo>();
     const [presentIndex, setPresentIndex] = useState(0);
-    
-    const playerRef = useRef<YouTubePlayer>(null);
-      
+
     useEffect(() => {
         if (status == "authenticated") {
-            fetch(`/api/house?userId=${session.user?.userId}`)
+            fetch(`/api/house?userId=${session.user?.id}`)
             .then(async (res) => {
                 const fetchRes = await res.json();
                 if ("error" in fetchRes) {
                     console.log("error" + fetchRes.error);
                 } else {
                     setHouse(fetchRes);
-                    if (house?.presents.length != 0) {
-                        setMusicIndex(0);
-                    }
                 }
             });
         }
     }, [status]);
 
-    const backMusicList = () => {
-        if (presentIndex == 0) {
-            setPresentIndex(house?.presents.length! - 1)
-        } else {
-            setPresentIndex(presentIndex - 1)
-        }
-        setMusicIndex(presentIndex);
-    }
 
-    const nextMusicList = () => {
-        if (presentIndex == house?.presents.length! - 1) {
-            setPresentIndex(0)
-        } else {
-            setPresentIndex(presentIndex + 1)
-        }
-        setMusicIndex(presentIndex);
-    }
-
-    const setMusicIndex = (index: number) => {
-        const youtubeId = house?.presents[index].song
-        setUrl(youtubeId!);
-        playOpen();
-    }
 
     const openPresent = (presentId: string) => {
         const index = house?.presents.findIndex((value) => value.id == presentId);
@@ -65,36 +41,11 @@ export default function Home() {
         open();
     }
 
-    const onPlayerReady: YouTubeProps["onReady"] = (event) => {
-        // YouTube player 객체 저장
-        playerRef.current = event.target;
-    };
-
-    const playVideo = () => {
-        if (!playerRef.current) return;
-
-        playToggle();
-        if (isPlaying) {
-            playerRef.current.pauseVideo();
-        } else {
-            playerRef.current.playVideo();
-        }
-    };
-
-    const opts: YouTubeProps['opts'] = {
-        width: "80%",
-        height: "auto",
-        playerVars: {
-            autoplay: 1,
-        },
-    };
-
     if (house) {
         return (
             <div
               className="container"
             >
-
             <Image
               w="100%"
               h="auto"
@@ -150,54 +101,54 @@ export default function Home() {
                 />
             ))}
 
+            <Button
+              className="positionAbsolute"
+              onClick={() => router.push("/make")}
+            >집 꾸미기</Button>
+
+            <CopyButton value={`https://christmas-carols.vercel.app/h/${session?.user?.id}`}>
+            {({ copied, copy }) => (
+               <Button color={copied ? 'teal' : 'blue'} onClick={copy}>
+                 {copied ? 'Copied url' : 'Copy url'}
+               </Button>
+            )}
+            </CopyButton>
+
             <Modal
               opened={opened} 
-              onClose={close} 
-              title={house.presents[presentIndex].authorEmail}
+              onClose={close}
               centered
               fullScreen
             >
-                
-            {house.presents[presentIndex].letter}
-
-            <Button onClick={() => {
-                setMusicIndex(presentIndex)
-                close();
-            }}>추천한 노래듣기</Button>
-
-            </Modal>
-
-            <div 
-              className="positionAbsolute"
-              style={{
-                  top: "400px"
-              }}>
-
+             
+             <Stack>
+                   
                 <Center>
-                <Group>
-                    <UnstyledButton onClick={backMusicList}>
-                        <IconPlayerSkipBack />
-                    </UnstyledButton>
-                    <UnstyledButton onClick={playVideo}>
-                        {isPlaying && <IconPlayerPause />}
-                        {!isPlaying && <IconPlayerPlay />}
-                    </UnstyledButton>
-                    <UnstyledButton onClick={nextMusicList}>
-                        <IconPlayerSkipForward />
-                    </UnstyledButton>
-                </Group>
+                    <Title order={2}>{house.presents[presentIndex].authorName}님의 선물상자</Title>
+
                 </Center>
 
-                <YouTube 
-                  videoId={url}
-                  opts={opts}
-                  onReady={onPlayerReady}
-                  onPlay={playOpen}
-                  onPause={playClose}
-                  onEnd={nextMusicList}
-                  
-                />
-            </div>
+                <Center>
+                    {house.presents[presentIndex].song == playerState.videoId ? (
+                        <YoutubeBox />
+                    ): (
+                        <Button>노래 듣기</Button>
+                    )}
+                    
+                </Center>
+                
+
+                <Space />
+
+                <Center>
+                    <Text>{house.presents[presentIndex].letter}</Text>
+                </Center>
+                
+
+
+             </Stack>
+
+            </Modal>
             </div>
         )
     }

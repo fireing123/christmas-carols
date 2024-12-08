@@ -15,6 +15,7 @@ interface PresentData {
     locationY: number;
     color: number;
     authorEmail: string;
+    authorName: string;
     song: string;
     letter: string;
 }

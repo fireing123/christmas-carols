@@ -36,6 +36,7 @@ export async function GET(request: Request) {
                 locationY: 50,
                 color: 0,
                 authorEmail: "gamd82368@gmail.com",
+                authorName: "김도현",
                 song: "dJhp6awU5Z8",
                 letter: "존나 아프다...."
             },
@@ -45,6 +46,7 @@ export async function GET(request: Request) {
                 locationY: 150,
                 color: 1,
                 authorEmail: "gamd82368@gmail.com",
+                authorName: "김도현",
                 song: "Xp5glUUdxiE",
                 letter: "존나 아프다...."
             },
@@ -54,6 +56,7 @@ export async function GET(request: Request) {
                 locationY: 50,
                 color: 0,
                 authorEmail: "gamd82368@gmail.com",
+                authorName: "김도현",
                 song: "RiyY-LZFLw8",
                 letter: "존나 아프다...."
             }
@@ -82,5 +85,61 @@ export async function GET(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-    
+    return NextResponse.json({
+        authorEmail: "gimd82368@gmail.com",
+        backgroundColor: 0,
+        houseColor: 0,
+        presents: [
+            {
+                id: "5641545asd6",
+                locationX: 150,
+                locationY: 50,
+                color: 0,
+                authorEmail: "gamd82368@gmail.com",
+                authorName: "김도현",
+                song: "dJhp6awU5Z8",
+                letter: "존나 아프다...."
+            },
+            {
+                id: "564154s56",
+                locationX: 50,
+                locationY: 150,
+                color: 1,
+                authorEmail: "gamd82368@gmail.com",
+                authorName: "김도현",
+                song: "Xp5glUUdxiE",
+                letter: "존나 아프다...."
+            },
+            {
+                id: "56415456",
+                locationX: 50,
+                locationY: 50,
+                color: 0,
+                authorEmail: "gamd82368@gmail.com",
+                authorName: "김도현",
+                song: "RiyY-LZFLw8",
+                letter: "존나 아프다...."
+            }
+        ],
+        decorations: [
+            {
+                id: "5641545asd6",
+                locationX: 150,
+                locationY: 50,
+                color: 0
+            },
+            {
+                id: "564154s56",
+                locationX: 50,
+                locationY: 150,
+                color: 1
+            },
+            {
+                id: "56415456",
+                locationX: 50,
+                locationY: 50,
+                color: 1
+            }
+        ]
+    })
 }

@@ -70,6 +70,7 @@ export default function Friend() {
         const newItem:  PresentData = {
             id: Math.random().toString(36).substring(2, 16),
             authorEmail: authorEmail!,
+            authorName: session.user?.name!,
             locationX: 100,
             locationY: 100,
             color: color,
@@ -224,20 +225,37 @@ export default function Friend() {
                             />
                         ))}
 
-                        <Text className="positionAbsolute">{name} 님의 하우스에 오신것을 환영합니다</Text>
+                        <Center>
+                            <div
+                            className="positionAbsolute"
+                            
+                            style={{
+                              left: "20px",
+                              top: "20px"
+                            }}
+                            >
+                            <Text 
+                              size='xl'
+                              fw={700}
+                            >{name}님의</Text>
+                            <Text
+                              size='xl'
+                              fw={700}
+                            >하우스에 오신것을 환영합니다
+                            </Text>
+                            </div>
+                        </Center>
 
-                        <ActionIcon
-                          variant="filled" 
-                          aria-label="Settings" 
+                        <Button
                           onClick={formOpen}
                           className="positionAbsolute"
                           style={{
-                            left: "300px",
-                            top: "20px"
-                          }}
-                        >
+                            left: "200px",
+                            top: "500px"
+                          }}>
                             <IconHeart />
-                        </ActionIcon>
+                            선물하기
+                        </Button>
     
 
                         {visible && <Overlay

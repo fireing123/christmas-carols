@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { ColorPicker, Dialog, Group, Button, Image, Modal, Grid } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { houseColors, housePaths, groundColors, groundPaths, decorationPaths, decorationColors } from '@lib/resorcePath';
+import { houseColors, housePaths, groundColors, groundPaths, decorationPaths } from '@lib/resorcePath';
 
 
 export default function Make() {
@@ -45,7 +45,19 @@ export default function Make() {
     }
 
     const SaveHouse = () => {
+        fetch(`/api/house`, {
+            method: "PATCH",
+            body: JSON.stringify({
+                ...house
+            })
+        }).then(async (res) => {
+            setHouse(await res.json());
 
+            setItems(house?.decorations!);
+            setDragId(null);
+            setHouseColor(house?.houseColor!);
+            setBackgroundColor(house?.backgroundColor!);
+        })
     }
 
     const createDecData = (color: number) => {
@@ -76,18 +88,28 @@ export default function Make() {
         }
     }
 
-    const handleMouseDown = (id: string, event: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseDown = (id: string, event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         event.preventDefault();
         setDragId(id)
     };
 
     // 드래그 중 위치 업데이트
-    const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const handleMouseMove = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
         if (dragId == null) return;
+
+        const clientX =
+            "clientX" in event
+                ? event.clientX
+                : event.touches[0].clientX;
+        const clientY =
+            "clientY" in event
+                ? event.clientY
+                : event.touches[0].clientY;
+
         setItems(
             items.map((item) =>
                 item.id === dragId
-                ? { ...item, locationX: event.clientX - 50, locationY: event.clientY - 150} as never
+                ? { ...item, locationX: clientX - 50, locationY: clientY - 150} as never
                 : item
             )
         )
@@ -106,6 +128,8 @@ export default function Make() {
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
+          onTouchMove={handleMouseMove}
+          onTouchEnd={handleMouseUp}
         >
             <Image 
               w="100%"
@@ -146,6 +170,7 @@ export default function Make() {
                       zIndex: dragId === v.id ? 10 : 1,
                   }}
                   onMouseDown={(e) => handleMouseDown(v.id, e)}
+                  onTouchStart={(e) => handleMouseDown(v.id, e)}
                 />
             ))}
 
@@ -153,8 +178,8 @@ export default function Make() {
               onClick={SaveHouse} 
               className="positionAbsolute"
               style={{
-                left: "200px",
-                top: "50px"
+                left: "270px",
+                top: "10px"
               }}
             >save</Button>
 
@@ -162,8 +187,8 @@ export default function Make() {
               onClick={decOpen}
               className="positionAbsolute"
               style={{
-                left: "10px",
-                top: "50px"
+                left: "-45px",
+                top: "10px"
               }}
             >장식품 추가</Button>
 

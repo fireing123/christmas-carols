@@ -8,6 +8,9 @@ import { MantineProvider, createTheme } from '@mantine/core';
 import Header from "@/component/Header/Header";
 import { SessionLayout } from "@/component/Layout/Session";
 import ThemeProviders from "@/component/Layout/theme";
+import Footer from "@/component/Footer/Footer";
+import { YouTubePlayerProvider } from "@/component/Layout/YoutubeContext";
+import GlobalPlayer from "@/component/GlobalMusic";
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -32,8 +35,14 @@ export default function RootLayout({
       <MantineProvider theme={theme} >
       <ThemeProviders>
       <SessionLayout>
-        <Header />
-        {children}
+      <YouTubePlayerProvider>
+        <GlobalPlayer />
+        <div id="wrap">
+          <Header />
+          {children}
+        </div>
+        <Footer />
+      </YouTubePlayerProvider>
       </SessionLayout>
       </ThemeProviders>
       </MantineProvider>

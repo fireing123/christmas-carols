@@ -1,6 +1,20 @@
 export const houseColors = [
-    '#fff',
-    '#ddd'
+    "#BF2626",
+    "#0396A6",
+    "#0487D9",
+    "#BF3978",
+    "#BF2626",
+    "#A65D03",
+    "#488C03",
+    "#038C7F",
+    "#BF6F41",
+    "#3498BF",
+    "#9A89D9",
+    "#BF75AB",
+    "#BF6979",
+    "#A68932",
+    "#6CA663",
+    "#03A6A6"
 ];
 
 export const housePaths = [
@@ -35,8 +49,10 @@ export const groundPaths = [
 ];
 
 export const presentColors = [
-    '#fff',
-    '#ddd'
+    "#D95B72",
+    "#5BA626",
+    "#F2CC85",
+    "#F24C3D"
 ];
 
 export const presentPaths = [
@@ -46,10 +62,6 @@ export const presentPaths = [
     "/presentBox/37-removebg-preview.png"
 ];
 
-export const decorationColors = [
-    '#fff',
-    '#ddd'
-];
 
 export const decorationPaths = [
     "/decoration/17-removebg-preview.png",
