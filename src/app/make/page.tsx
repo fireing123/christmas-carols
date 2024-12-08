@@ -168,13 +168,13 @@ export default function Make() {
             >장식품 추가</Button>
 
             <Modal fullScreen opened={decorationOpened} onClose={decClose} title="장식품 추가">
-                {decorationColors.map((item, i) => (
+                {decorationPaths.map((item, i) => (
                     <Image
                       w="20%"
                       h="auto"
                       fit="contain"
-                      src={decorationPaths[i]}
-                      alt="present"
+                      src={item}
+                      alt="decoration"
                       key={i}
                       onClick={() => createDecData(i)}
                     />
